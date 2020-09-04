@@ -23,7 +23,8 @@ class GameControl():
 		self.card=Card(self.screen,[0,1])
 		self.map=[[-1 for i in range(9)] for i in range(5)]
 		self.plant=[]
-		
+		self.zombies=[]
+
 		'''
 		background_img=pygame.image.load('Picture\BackGround\Day.jpg')
 		self.screen.blit(background_img,(0,0))
@@ -32,11 +33,6 @@ class GameControl():
 		pygame.display.flip()
 		'''
 	# Page initialization
-
-	'''
-	def Draw_Plant():
-		?
-	'''
 
 	'''
 	def Draw_Zombie():
@@ -91,13 +87,32 @@ class GameControl():
 		self.map[y][x]=self.card.select
 		self.card.select=-1
 		self.sun.sum-=self.card.cost_list[self.map[y][x]]
-		
+		if (self.map[y][x]==0):
+			self.plant.append(Sunflower(self.screen,0,(y,x)))
+
 		'''
 		植物名称与ID不符,有待修正
 		'''
 	
 	def PlantDraw(self):
-		
+		a=[]
+		for pla in self.plant:
+			if (pla.hp>0):
+				a.append(pla)
+				pla.Draw()
+		self.plant=[]
+		for pla in a:
+			self.plant.append(pla)
+	
+	def Event(self):
+		a=[]
+		for pla in self.plant:
+			if (pla.hp>0):
+				a.append(pla)
+				pla.Event(self.sun)
+		self.plant=[]
+		for pla in a:
+			self.plant.append(pla)
 
 	def Test(self):
 		x=1
@@ -152,6 +167,7 @@ class GameControl():
 
 			self.Mousedraw()
 			self.PlantDraw()
+			self.Event()
 			self.sun.Appear()
 			self.sun.Draw()
 			
@@ -165,12 +181,14 @@ class GameControl():
 				if (p==0):
 					p=1
 			
-			if event.type == pygame.MOUSEBUTTONDOWN:
-				print(event.pos)
+			if event.type == pygame.MOUSEBUTTONUP:
+				print(event.pos,self.card.select)
 				if (self.card.select!=-1):
-					SetPlant(pygame.mouse.get_pos())
+					self.SetPlant(pygame.mouse.get_pos())
 				self.sun.Pick(pygame.mouse.get_pos())
 				self.card.Choose(pygame.mouse.get_pos(),self.sun.sum)
+				
+				#sleep(0.001)
 
 			self.clock.tick(Fps)
 			# 交互阶段

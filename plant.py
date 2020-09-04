@@ -43,7 +43,7 @@ class Sun():
 	def Pick(self,click):
 		pos=( int(round(click[0])),int(round(click[1])) )
 		for sun in self.sunlist:
-			if (abs(pos[0]-sun[0])<=100 and abs(pos[1]-sun[1])<=100):
+			if (0<= pos[0]-sun[0] <=70 and 0<= pos[1]-sun[1]<=70):
 				self.sum+=25
 				sun[4]=-100000
 				break
@@ -98,8 +98,8 @@ class Sunflower():
 		self.hp=Plant_hp[id]
 		self.dic=Plant_dic[id]
 		self.pic_sum=Plant_Picsum[id]
-		self.time=pygame.time.get_ticks()
-		self.pic_pos=(Coordinate_origin[0]+Block_size_width*pos[0],Coordinate_origin[1]+Block_size_height*pos[1])
+		self.time=pygame.time.get_ticks()-random.randint(0,self.cd)
+		self.pic_pos=(Coordinate_origin[0]+Block_size_width*pos[1],Coordinate_origin[1]+Block_size_height*pos[0])
 	
 	def Draw(self):
 		img=pygame.image.load(self.dic+str(self.sit)+'.png')
@@ -120,8 +120,30 @@ class Sunflower():
 
 class PeaShooter():
 	def __init__(self,id,pos):
-		self.hp=Plant_hp[id]
-		self.pos=pos
-		self.pic=Plant_Picsum[id]
 		self.sit=1
-		self.time=0
+		self.fps=1
+		self.pos=pos
+		self.cd=1500
+		self.screen=scr
+		self.hp=Plant_hp[id]
+		self.dic=Plant_dic[id]
+		self.pic_sum=Plant_Picsum[id]
+		self.time=pygame.time.get_ticks()-500
+		self.pic_pos=(Coordinate_origin[0]+Block_size_width*pos[1],Coordinate_origin[1]+Block_size_height*pos[0])
+
+	def Draw(self):
+		img=pygame.image.load(self.dic+str(self.sit)+'.png')
+		self.screen.blit(img,self.pic_pos)
+		self.fps+=1
+		if (self.fps>=Plant_Move_FPS):
+			self.fps=1
+			self.sit+=1
+			if (self.sit>self.pic_sum):
+				self.sit=1
+
+	def Event(self,a):
+		if (self.hp<=0):
+			return
+		if (pygame.time.get_ticks()-self.time >= self.cd):
+			#a.sunlist.append([self.pic_pos[0]+10,self.pic_pos[1]+10,1,1,pygame.time.get_ticks(),0])
+			self.time=pygame.time.get_ticks()

@@ -55,7 +55,10 @@ Plant_dic=['Picture\Plants\SunFlower\\','Picture\Plants\Pea_Shooter\\']
 
 # Zombie Data
 
+CreateZom=880
 Zombie_hp=[10,10]
+Zombie_path=['Picture\Zombies\Zom1']
+Zombie_dic=[{'Walk':22,'Attack':21,'Withouthead':18,'LostHead':12,'Die':10}]
 
 '''
 顺序:普通僵尸,路障僵尸
