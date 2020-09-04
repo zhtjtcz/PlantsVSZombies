@@ -9,6 +9,7 @@ class Sun():
 		self.sunlist=[]
 		self.screen=scr
 		self.sum=100
+		self.pick_list=[]
 		random.seed(a=None)
 
 	def Appear(self):
@@ -20,10 +21,11 @@ class Sun():
 
 	def Draw(self):
 		a=[]
+		b=[]
 		for sun in self.sunlist:
 			if (pygame.time.get_ticks() - sun[4] >= 15000):
 				continue
-			
+			a.append(sun)
 			pic=pygame.image.load(self.path+str(sun[2])+'.png')
 			self.screen.blit(pic,(sun[0],sun[1]))
 			if (sun[1]<=450 and sun[5]>=1):
@@ -35,10 +37,25 @@ class Sun():
 				sun[2]+=1
 			if (sun[2]>22):
 				sun[2]=1
-			a.append(sun)
+
+		for sun in self.pick_list:
+			if (pygame.time.get_ticks()-sun[5]>=1000):
+				continue
+			b.append(sun)
+			print("!!!")
+			deltatime=(pygame.time.get_ticks()-sun[5])/1000
+			print(deltatime)
+			pic=pygame.image.load(self.path+str(sun[2])+'.png')
+			self.screen.blit(pic,(sun[0]-deltatime*sun[3],sun[1]-deltatime*sun[4]))
+
 		self.sunlist=[]
+		self.pick_list=[]
+
 		for sun in a:
 			self.sunlist.append(sun)
+
+		for sun in b:
+			self.pick_list.append(sun)
 
 	def Pick(self,click):
 		pos=( int(round(click[0])),int(round(click[1])) )
@@ -46,6 +63,7 @@ class Sun():
 			if (0<= pos[0]-sun[0] <=70 and 0<= pos[1]-sun[1]<=70):
 				self.sum+=25
 				sun[4]=-100000
+				self.pick_list.append((sun[0],sun[1],sun[2],(sun[0]-50),(sun[1]-50),pygame.time.get_ticks()))
 				break
 
 class Card():

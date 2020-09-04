@@ -104,7 +104,7 @@ class GameControl():
 		for pla in a:
 			self.plant.append(pla)
 	
-	def Event(self):
+	def PlantEvent(self):
 		a=[]
 		for pla in self.plant:
 			if (pla.hp>0):
@@ -167,7 +167,10 @@ class GameControl():
 
 			self.Mousedraw()
 			self.PlantDraw()
-			self.Event()
+			self.PlantEvent()
+			#self.CreateZom()
+			#self.ZomDraw()
+
 			self.sun.Appear()
 			self.sun.Draw()
 			
