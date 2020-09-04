@@ -15,7 +15,7 @@ class Sun():
 		if (pygame.time.get_ticks()-self.time<=6000):
 			return
 		
-		self.sunlist.append([random.randint(50,600),80,1,1,pygame.time.get_ticks()])
+		self.sunlist.append([random.randint(50,600),80,1,1,pygame.time.get_ticks(),1])
 		self.time=pygame.time.get_ticks()
 
 	def Draw(self):
@@ -26,7 +26,7 @@ class Sun():
 			
 			pic=pygame.image.load(self.path+str(sun[2])+'.png')
 			self.screen.blit(pic,(sun[0],sun[1]))
-			if (sun[1]<=450):
+			if (sun[1]<=450 and sun[5]>=1):
 				sun[1]+=1.6
 			
 			sun[3]+=1
@@ -89,17 +89,34 @@ class Card():
 
 
 class Sunflower():
-	def __init__(self,id,pos):
-		self.hp=Plant_hp[id]
-		self.pos=pos
-		self.pic_pos=(Coordinate_origin[0]+Block_size_width*pos[0],Coordinate_origin[1]+Block_size_height*pos[1])
-		self.pic=Plant_Picsum[id]
+	def __init__(self,scr,id,pos):
 		self.sit=1
+		self.fps=1
+		self.pos=pos
 		self.cd=24000
+		self.screen=scr
+		self.hp=Plant_hp[id]
+		self.dic=Plant_dic[id]
+		self.pic_sum=Plant_Picsum[id]
 		self.time=pygame.time.get_ticks()
+		self.pic_pos=(Coordinate_origin[0]+Block_size_width*pos[0],Coordinate_origin[1]+Block_size_height*pos[1])
 	
-	def Event(self):
-		
+	def Draw(self):
+		img=pygame.image.load(self.dic+str(self.sit)+'.png')
+		self.screen.blit(img,self.pic_pos)
+		self.fps+=1
+		if (self.fps>=Plant_Move_FPS):
+			self.fps=1
+			self.sit+=1
+			if (self.sit>self.pic_sum):
+				self.sit=1
+
+	def Event(self,a):
+		if (self.hp<=0):
+			return
+		if (pygame.time.get_ticks()-self.time >= self.cd):
+			a.sunlist.append([self.pic_pos[0]+10,self.pic_pos[1]+10,1,1,pygame.time.get_ticks(),0])
+			self.time=pygame.time.get_ticks()
 
 class PeaShooter():
 	def __init__(self,id,pos):
