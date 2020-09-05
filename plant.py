@@ -42,9 +42,7 @@ class Sun():
 			if (pygame.time.get_ticks()-sun[5]>=1000):
 				continue
 			b.append(sun)
-			print("!!!")
 			deltatime=(pygame.time.get_ticks()-sun[5])/1000
-			print(deltatime)
 			pic=pygame.image.load(self.path+str(sun[2])+'.png')
 			self.screen.blit(pic,(sun[0]-deltatime*sun[3],sun[1]-deltatime*sun[4]))
 

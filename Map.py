@@ -25,6 +25,8 @@ class GameControl():
 		self.plant=[]
 		self.zombies=[]
 
+		self.time=pygame.time.get_ticks()
+
 		'''
 		background_img=pygame.image.load('Picture\BackGround\Day.jpg')
 		self.screen.blit(background_img,(0,0))
@@ -114,6 +116,19 @@ class GameControl():
 		for pla in a:
 			self.plant.append(pla)
 
+	def CreateZom(self):
+		if (pygame.time.get_ticks() - self.time <= 5000):
+			return
+		self.zombies.append(NolMal_Zombie(self.screen,0,random.randint(0,4)))
+		self.time=pygame.time.get_ticks()
+
+	def ZomDraw(self):
+		for zom in self.zombies:
+			zom.Draw()
+	
+	def ZomEvent(self):
+		pass
+
 	def Test(self):
 		x=1
 		y=1
@@ -168,8 +183,9 @@ class GameControl():
 			self.Mousedraw()
 			self.PlantDraw()
 			self.PlantEvent()
-			#self.CreateZom()
-			#self.ZomDraw()
+
+			self.CreateZom()
+			self.ZomDraw()
 
 			self.sun.Appear()
 			self.sun.Draw()
