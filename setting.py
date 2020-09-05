@@ -42,12 +42,12 @@ INF=0x3f3f3f3f
 Plant Data
 '''
 
-Plant_cost=[50,100]
-Plant_cd=[5,5]
+Plant_cost=[50,100,50]
+Plant_cd=[7500,7500,30000]
 
-Plant_hp=[30,40]
-Plant_Picsum=[18,13]
-Plant_dic=['Picture\Plants\SunFlower\\','Picture\Plants\Pea_Shooter\\']
+Plant_hp=[30,30,400]
+Plant_Picsum=[18,13,16]
+Plant_dic=['Picture\Plants\SunFlower\\','Picture\Plants\Pea_Shooter\\','Picture\Plants\WallNut\\']
 
 '''
 顺序:向日葵,豌豆射手

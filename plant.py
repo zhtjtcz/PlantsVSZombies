@@ -8,7 +8,7 @@ class Sun():
 		self.path='Picture\Others\Sun\\'
 		self.sunlist=[]
 		self.screen=scr
-		self.sum=100
+		self.sum=500
 		self.pick_list=[]
 		random.seed(a=None)
 
@@ -221,3 +221,39 @@ class PeaShooter():
 			bulllist.append(Bullet(self.screen,self.pos[0],Coordinate_origin[1]+self.pos[1]*Block_size_width,1))
 			self.time=pygame.time.get_ticks()
 			return
+
+class WallNut():
+	def __init__(self,scr,id,pos):
+		self.sit=1
+		self.fps=1
+		self.pos=pos
+		self.screen=scr
+		self.hp=Plant_hp[id]
+		self.dic=Plant_dic[id]
+		self.path='Nolmal\\'
+		self.pic_sum=Plant_Picsum[id]
+		self.pic_pos=(Coordinate_origin[0]+Block_size_width*pos[1],Coordinate_origin[1]+Block_size_height*pos[0])
+	
+	def Draw(self):
+		img=pygame.image.load(self.dic+self.path+str(self.sit)+'.png')
+		self.screen.blit(img,self.pic_pos)
+		self.fps+=1
+		if (self.fps>=Plant_Move_FPS):
+			self.fps=1
+			self.sit+=1
+			if (self.sit>self.pic_sum):
+				self.sit=1		
+
+	def Event(self,a,bulllist,zomlist):
+		if (self.hp<=0):
+			return
+		if (self.hp<=133 and self.path!='Cracked2\\'):
+			self.path='Cracked2\\'
+			self.sit=1
+			self.fps=1
+			self.pic_sum=15
+		elif (self.hp<=267 and self.path!='Cracked1\\'):
+			self.path='Cracked1\\'
+			self.sit=1
+			self.fps=1
+			self.pic_sum=11

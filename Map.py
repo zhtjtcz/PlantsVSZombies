@@ -20,7 +20,7 @@ class GameControl():
 		self.all_sprites=pygame.sprite.Group()
 		self.clock=pygame.time.Clock()
 		self.sun=Sun(self.screen)
-		self.card=Card(self.screen,[0,1])
+		self.card=Card(self.screen,[0,1,2])
 		self.map=[[-1 for i in range(9)] for i in range(5)]
 		self.plant=[]
 		self.zombies=[]
@@ -94,6 +94,8 @@ class GameControl():
 			self.plant.append(Sunflower(self.screen,0,(y,x)))
 		elif (self.map[y][x]==1):
 			self.plant.append(PeaShooter(self.screen,1,(y,x)))
+		elif (self.map[y][x]==2):
+			self.plant.append(WallNut(self.screen,2,(y,x)))
 
 		'''
 		植物名称与ID不符,有待修正
@@ -177,10 +179,6 @@ class GameControl():
 			self.zombies.append(zom)
 
 	def Test(self):
-		x=1
-		y=1
-		p=1
-		q=1
 		bgp=pygame.image.load('Picture\BackGround\Day.png')
 		cd=pygame.image.load('Picture\BackGround\SeedBank.png')
 		card1=pygame.image.load('Picture\Cards\\'+'1.png')
@@ -205,28 +203,6 @@ class GameControl():
 
 			#预处理阶段
 
-
-			'''
-			move='Picture\Zombies\Zom1\Walk'+'\\'+str(x)+'.png'
-			zom=pygame.image.load(move)
-			self.screen.blit(zom,(200,200))
-
-			y+=1
-			if (y>=Zombie_Move_FPS):
-				x=(x+1)%23
-				y=1
-				if (x==0):
-					x=1
-			'''
-			
-			'''
-			move2='Picture\Plants\SunFlower'+'\\'+str(p)+'.png'
-			pla=pygame.image.load(move2)
-			for i in range(9):
-				for j in range(5):
-					self.screen.blit(pla,(Coordinate_origin[0]+Block_size_width*i,Coordinate_origin[1]+Block_size_height*j))
-			'''
-
 			self.Mousedraw()
 			self.PlantDraw()
 			self.PlantEvent()
@@ -243,13 +219,6 @@ class GameControl():
 			
 			pygame.display.flip()
 			# 事件发生阶段
-
-			q+=1
-			if (q>=Plant_Move_FPS):
-				p=(p+1)%19
-				q=1
-				if (p==0):
-					p=1
 			
 			if event.type == pygame.MOUSEBUTTONUP:
 				print(event.pos,self.card.select)
