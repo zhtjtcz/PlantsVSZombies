@@ -30,6 +30,7 @@ Card_Height=65
 
 
 BLACK=(0,0,0)
+INF=0x3f3f3f3f
 #其他参数
 
 '''
@@ -44,8 +45,8 @@ Plant Data
 Plant_cost=[50,100]
 Plant_cd=[5,5]
 
-Plant_hp=[30,80]
-Plant_Picsum=[18]
+Plant_hp=[30,40]
+Plant_Picsum=[18,13]
 Plant_dic=['Picture\Plants\SunFlower\\','Picture\Plants\Pea_Shooter\\']
 
 '''
@@ -55,7 +56,7 @@ Plant_dic=['Picture\Plants\SunFlower\\','Picture\Plants\Pea_Shooter\\']
 
 # Zombie Data
 
-Zom_pos=880
+Zom_pos=700
 Zombie_hp=[10,10]
 Zombie_path=['Picture\Zombies\Zom1']
 Zombie_dic=[{'Walk':22,'Attack':21,'Withouthead':18,'LostHead':12,'Die':10}]

@@ -24,7 +24,8 @@ class GameControl():
 		self.map=[[-1 for i in range(9)] for i in range(5)]
 		self.plant=[]
 		self.zombies=[]
-
+		self.bullet_list=[]
+		
 		self.time=pygame.time.get_ticks()
 
 		'''
@@ -91,6 +92,8 @@ class GameControl():
 		self.sun.sum-=self.card.cost_list[self.map[y][x]]
 		if (self.map[y][x]==0):
 			self.plant.append(Sunflower(self.screen,0,(y,x)))
+		elif (self.map[y][x]==1):
+			self.plant.append(PeaShooter(self.screen,1,(y,x)))
 
 		'''
 		植物名称与ID不符,有待修正
@@ -115,16 +118,41 @@ class GameControl():
 				self.map[pla.pos[0]][pla.pos[1]]=-1
 				continue
 			a.append(pla)
-			pla.Event(self.sun)
+			pla.Event(self.sun,self.bullet_list,self.zombies)
 		self.plant=[]
 		for pla in a:
 			self.plant.append(pla)
 
+	def BulletDraw(self):
+		a=[]
+		for bull in self.bullet_list:
+			if (bull.exist==False):
+				continue
+			bull.Draw()
+			a.append(bull)
+		self.bullet_list=[]
+		for bull in a:
+			self.bullet_list.append(bull)
+
+	def BulletEvent(self):
+		a=[]
+		for bull in self.bullet_list:
+			if (bull.exist==False):
+				continue
+			bull.Attack(self.zombies)
+			a.append(bull)
+		self.bullet_list=[]
+		for bull in a:
+			self.bullet_list.append(bull)
+	
 	def CreateZom(self):
-		if (pygame.time.get_ticks() - self.time <= 5000):
+		if (pygame.time.get_ticks() - self.time <= 10000):
 			return
 		self.zombies.append(NolMal_Zombie(self.screen,0,random.randint(0,4)))
 		self.time=pygame.time.get_ticks()
+	'''
+	将被覆盖
+	'''
 
 	def ZomDraw(self):
 		a=[]
@@ -202,6 +230,9 @@ class GameControl():
 			self.Mousedraw()
 			self.PlantDraw()
 			self.PlantEvent()
+
+			self.BulletDraw()
+			self.BulletEvent()
 
 			self.CreateZom()
 			self.ZomDraw()

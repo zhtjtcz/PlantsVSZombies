@@ -24,6 +24,7 @@ class NolMal_Zombie():
 			return
 
 		if (self.hp<=0):
+			self.die=True
 			return
 
 		img=pygame.image.load(self.path+'\\'+self.sit+'\\'+str(self.picsit)+'.png')
@@ -36,7 +37,7 @@ class NolMal_Zombie():
 			self.picsit+=1
 			if (self.picsit>self.pic_sum):
 				self.picsit=1
-	
+
 	def Event(self,map):
 		if (self.die==True):
 			return

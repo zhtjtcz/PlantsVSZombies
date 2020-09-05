@@ -39,10 +39,10 @@ class Sun():
 				sun[2]=1
 
 		for sun in self.pick_list:
-			if (pygame.time.get_ticks()-sun[5]>=1000):
+			if (pygame.time.get_ticks()-sun[5]>=500):
 				continue
 			b.append(sun)
-			deltatime=(pygame.time.get_ticks()-sun[5])/1000
+			deltatime=(pygame.time.get_ticks()-sun[5])/500
 			pic=pygame.image.load(self.path+str(sun[2])+'.png')
 			self.screen.blit(pic,(sun[0]-deltatime*sun[3],sun[1]-deltatime*sun[4]))
 
@@ -103,6 +103,57 @@ class Card():
 	def Put(self,click):
 		pos=( int(round(click[0])),int(round(click[1])) )
 
+class Bullet():
+	def __init__(self,scr,line,pos,id):
+		self.screen=scr
+		self.line=line
+		self.pos=pos
+		self.id=id
+		self.speed=8
+		self.path='Picture\Bullets\\'
+		self.exist=True
+		self.sit=0
+
+	def Draw(self):
+		if (self.pos>=800):
+			self.exist=False
+			return
+		img=pygame.image.load(self.path+str(self.id)+'.png')
+		self.screen.blit(img,(self.pos,Coordinate_origin[1]+Block_size_height*(self.line)))
+		if (self.id!=3):
+			self.pos+=self.speed
+		if (self.id==3):
+			self.sit+=1
+			if (self.sit==2):
+				self.exist=False
+
+	def Attack(self,zombie):
+		if (self.id==3):
+			return
+		where=INF
+		for zom in zombie:
+			if (zom.hp<=0):
+				continue
+			if (self.line!=zom.line):
+				continue
+			if (abs(self.pos-zom.pos)<=30):
+				where=min(where,zom.pos)
+		
+		if (where!=INF):
+			for zom in zombie:
+				if (zom.hp<=0):
+					continue
+				if (self.line!=zom.line):
+					continue
+				if (zom.pos==where):
+					zom.hp-=1
+					self.id=3
+					self.pos+=60
+					return
+
+	'''
+	有盲区,有待修正
+	'''
 
 class Sunflower():
 	def __init__(self,scr,id,pos):
@@ -127,7 +178,7 @@ class Sunflower():
 			if (self.sit>self.pic_sum):
 				self.sit=1
 
-	def Event(self,a):
+	def Event(self,a,bulllist,zomlist):
 		if (self.hp<=0):
 			return
 		if (pygame.time.get_ticks()-self.time >= self.cd):
@@ -135,16 +186,16 @@ class Sunflower():
 			self.time=pygame.time.get_ticks()
 
 class PeaShooter():
-	def __init__(self,id,pos):
+	def __init__(self,scr,id,pos):
 		self.sit=1
 		self.fps=1
 		self.pos=pos
-		self.cd=1500
+		self.cd=1400
 		self.screen=scr
 		self.hp=Plant_hp[id]
 		self.dic=Plant_dic[id]
 		self.pic_sum=Plant_Picsum[id]
-		self.time=pygame.time.get_ticks()-500
+		self.time=pygame.time.get_ticks()-1000
 		self.pic_pos=(Coordinate_origin[0]+Block_size_width*pos[1],Coordinate_origin[1]+Block_size_height*pos[0])
 
 	def Draw(self):
@@ -157,9 +208,16 @@ class PeaShooter():
 			if (self.sit>self.pic_sum):
 				self.sit=1
 
-	def Event(self,a):
+	def Event(self,a,bulllist,zomlist):
 		if (self.hp<=0):
 			return
-		if (pygame.time.get_ticks()-self.time >= self.cd):
-			#a.sunlist.append([self.pic_pos[0]+10,self.pic_pos[1]+10,1,1,pygame.time.get_ticks(),0])
+		if (pygame.time.get_ticks()-self.time <= self.cd):
+			return
+		for zom in zomlist:
+			if (self.pos[0]!=zom.line):
+				continue
+			if (zom.die==True):
+				continue
+			bulllist.append(Bullet(self.screen,self.pos[0],Coordinate_origin[1]+self.pos[1]*Block_size_width,1))
 			self.time=pygame.time.get_ticks()
+			return
