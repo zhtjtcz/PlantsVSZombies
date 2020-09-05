@@ -44,7 +44,7 @@ Plant Data
 Plant_cost=[50,100]
 Plant_cd=[5,5]
 
-Plant_hp=[10,20]
+Plant_hp=[30,80]
 Plant_Picsum=[18]
 Plant_dic=['Picture\Plants\SunFlower\\','Picture\Plants\Pea_Shooter\\']
 

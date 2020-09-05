@@ -99,9 +99,11 @@ class GameControl():
 	def PlantDraw(self):
 		a=[]
 		for pla in self.plant:
-			if (pla.hp>0):
-				a.append(pla)
-				pla.Draw()
+			if (pla.hp<=0):
+				self.map[pla.pos[0]][pla.pos[1]]=-1
+				continue
+			a.append(pla)
+			pla.Draw()
 		self.plant=[]
 		for pla in a:
 			self.plant.append(pla)
@@ -109,9 +111,11 @@ class GameControl():
 	def PlantEvent(self):
 		a=[]
 		for pla in self.plant:
-			if (pla.hp>0):
-				a.append(pla)
-				pla.Event(self.sun)
+			if (pla.hp<=0):
+				self.map[pla.pos[0]][pla.pos[1]]=-1
+				continue
+			a.append(pla)
+			pla.Event(self.sun)
 		self.plant=[]
 		for pla in a:
 			self.plant.append(pla)
@@ -123,11 +127,26 @@ class GameControl():
 		self.time=pygame.time.get_ticks()
 
 	def ZomDraw(self):
+		a=[]
 		for zom in self.zombies:
+			if (zom.die==True):
+				continue
 			zom.Draw()
-	
+			a.append(zom)
+		self.zombies=[]
+		for zom in a:
+			self.zombies.append(zom)
+		
 	def ZomEvent(self):
-		pass
+		a=[]
+		for zom in self.zombies:
+			if (zom.die==True):
+				continue
+			zom.Event(self.plant)
+			a.append(zom)
+		self.zombies=[]
+		for zom in a:
+			self.zombies.append(zom)
 
 	def Test(self):
 		x=1
@@ -186,6 +205,7 @@ class GameControl():
 
 			self.CreateZom()
 			self.ZomDraw()
+			self.ZomEvent()
 
 			self.sun.Appear()
 			self.sun.Draw()
