@@ -217,6 +217,8 @@ class GameControl():
 			self.sun.Appear()
 			self.sun.Draw()
 			
+			#pygame.draw.rect(self.screen,GRAY,(83,10,50,65),0)
+
 			pygame.display.flip()
 			# 事件发生阶段
 			

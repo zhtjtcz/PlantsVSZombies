@@ -30,6 +30,7 @@ Card_Height=65
 
 
 BLACK=(0,0,0)
+GRAY=(187,187,187)
 INF=0x3f3f3f3f
 #其他参数
 

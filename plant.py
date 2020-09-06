@@ -80,12 +80,17 @@ class Card():
 			self.cost_list.append(Plant_cost[i])
 			self.cd_list.append(Plant_cd[i])
 			self.time_list.append(0)
-			
 
 	def Draw(self):
 		for i in self.card_list:
 			img=pygame.image.load(self.path+str(i+1)+'.png')
+			
+			gray=pygame.Surface((Card_scale[0],Card_scale[1]+5),flags=0,depth=32)
+			gray.set_alpha(100)
+
 			self.screen.blit(img,(Card_pos[0]+i*Card_size,Card_pos[1]))
+			self.screen.blit(gray,(Card_pos[0]+i*Card_size,Card_pos[1]))
+			self.screen.blit(gray,(Card_pos[0]+i*Card_size,Card_pos[1]))
 
 	def Choose(self,click,sunsum):
 		if (sunsum<=0):
@@ -252,7 +257,7 @@ class WallNut():
 			self.sit=1
 			self.fps=1
 			self.pic_sum=15
-		elif (self.hp<=267 and self.path!='Cracked1\\'):
+		elif (133<self.hp<=267 and self.path!='Cracked1\\'):
 			self.path='Cracked1\\'
 			self.sit=1
 			self.fps=1
