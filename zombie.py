@@ -16,6 +16,7 @@ class NolMal_Zombie():
 		self.dic=Zombie_dic[id]
 		self.pic_sum=self.dic[self.sit]
 		self.slow=False
+		self.slow_time=0
 		self.speed=0.4
 		self.die=False
 
@@ -36,6 +37,13 @@ class NolMal_Zombie():
 			self.Die()
 			return			
 
+		if (self.slow==True and self.sit=='Walk' and pygame.time.get_ticks()-self.slow_time<=10000):
+			self.speed=0.2
+		else:
+			if (self.sit=='Walk'):
+				self.slow=False
+				self.speed=0.4
+		
 		img=pygame.image.load(self.path+'\\'+self.sit+'\\'+str(self.picsit)+'.png')
 		self.screen.blit(img,(self.pos,115+(self.line-1)*Block_size_height))
 

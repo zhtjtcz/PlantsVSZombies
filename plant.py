@@ -167,8 +167,11 @@ class Bullet():
 					continue
 				if (zom.pos==where):
 					zom.hp-=1
+					if (self.id==2):
+						zom.slow=True
+						zom.slow_time=pygame.time.get_ticks()
 					self.id=3
-					self.pos+=60
+					#self.pos+=60
 					return
 
 	'''
