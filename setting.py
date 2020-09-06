@@ -43,19 +43,20 @@ INF=0x3f3f3f3f
 Plant Data
 '''
 
-Plant_cost=[50,100,50,175]
-Plant_cd=[7500,7500,30000,7500]
+Plant_cost=[50,100,50,175,200]
+Plant_cd=[7500,7500,30000,7500,7500]
 
-Plant_hp=[30,30,400,30]
-Plant_Picsum=[18,13,16,15]
+Plant_hp=[30,30,400,30,30]
+Plant_Picsum=[18,13,16,15,15]
 Plant_dic=['Picture\Plants\SunFlower\\',
-			'Picture\Plants\Pea_Shooter\\',
+			'Picture\Plants\PeaShooter\\',
 			'Picture\Plants\WallNut\\',
-			'Picture\Plants\SnowPea\\']
+			'Picture\Plants\SnowPea\\',
+			'Picture\Plants\RepeaterPea\\']
 
 
 '''
-顺序:向日葵,豌豆射手,坚果墙,寒冰射手
+顺序:向日葵,豌豆射手,坚果墙,寒冰射手,双发射手
 '''
 
 # Zombie Data

@@ -20,7 +20,7 @@ class GameControl():
 		self.all_sprites=pygame.sprite.Group()
 		self.clock=pygame.time.Clock()
 		self.sun=Sun(self.screen)
-		self.card=Card(self.screen,[0,1,2,3])
+		self.card=Card(self.screen,[0,1,2,3,4])
 		self.map=[[-1 for i in range(9)] for i in range(5)]
 		self.plant=[]
 		self.zombies=[]
@@ -28,20 +28,7 @@ class GameControl():
 		
 		self.time=pygame.time.get_ticks()
 
-		'''
-		background_img=pygame.image.load('Picture\BackGround\Day.jpg')
-		self.screen.blit(background_img,(0,0))
-		self.all_sprites.update()
-		self.all_sprites.draw(self.screen)
-		pygame.display.flip()
-		'''
 	# Page initialization
-
-	'''
-	def Draw_Zombie():
-
-	def Draw_Bullets():
-	'''
 
 	def Play_BackGround_Music(self):
 		pygame.mixer.music.load('Music\Grasswalk.mp3')
@@ -99,7 +86,8 @@ class GameControl():
 			self.plant.append(WallNut(self.screen,2,(y,x)))
 		elif (self.map[y][x]==3):
 			self.plant.append(SnowPea(self.screen,3,(y,x)))
-		
+		elif (self.map[y][x]==4):
+			self.plant.append(RepeaterPea(self.screen,4,(y,x)))
 		'''
 		植物名称与ID不符,有待修正
 		'''
@@ -184,11 +172,9 @@ class GameControl():
 	def Test(self):
 		bgp=pygame.image.load('Picture\BackGround\Day.png')
 		cd=pygame.image.load('Picture\BackGround\SeedBank.png')
-		card1=pygame.image.load('Picture\Cards\\'+'1.png')
-		card1=pygame.transform.scale(card1,Card_scale)
+		car=pygame.image.load('Picture\Others\Car.png')
 
-		card2=pygame.image.load('Picture\Cards\\'+'2.png')
-		card2=pygame.transform.scale(card2,Card_scale)
+		
 		self.Play_BackGround_Music()
 
 		while 1:
@@ -199,7 +185,9 @@ class GameControl():
 			self.screen.blit(bgp,(0,0))
 			self.screen.blit(cd,(0,0))
 			self.card.Draw(self.sun.sum)
-
+			for i in range(5):
+				self.screen.blit(car,(Coordinate_origin[0]-65,Coordinate_origin[1]+i*Block_size_height))
+			
 			font=pygame.font.SysFont(None,22)
 			text=font.render(str(self.sun.sum),True,BLACK)
 			self.screen.blit(text,Sun_Pos)
@@ -220,8 +208,6 @@ class GameControl():
 			self.sun.Appear()
 			self.sun.Draw()
 			
-			#pygame.draw.rect(self.screen,GRAY,(83,10,50,65),0)
-
 			pygame.display.flip()
 			# 事件发生阶段
 			
