@@ -88,6 +88,7 @@ class GameControl():
 			self.card.select=-1
 			return
 		self.map[y][x]=self.card.select
+		self.card.Put(self.card.select)
 		self.card.select=-1
 		self.sun.sum-=self.card.cost_list[self.map[y][x]]
 		if (self.map[y][x]==0):
@@ -195,7 +196,7 @@ class GameControl():
 			
 			self.screen.blit(bgp,(0,0))
 			self.screen.blit(cd,(0,0))
-			self.card.Draw()
+			self.card.Draw(self.sun.sum)
 
 			font=pygame.font.SysFont(None,22)
 			text=font.render(str(self.sun.sum),True,BLACK)

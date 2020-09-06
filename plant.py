@@ -79,34 +79,46 @@ class Card():
 			self.card_list.append(i)
 			self.cost_list.append(Plant_cost[i])
 			self.cd_list.append(Plant_cd[i])
-			self.time_list.append(0)
+			self.time_list.append(-INF)
 
-	def Draw(self):
-		for i in self.card_list:
-			img=pygame.image.load(self.path+str(i+1)+'.png')
+	def Draw(self,sunsum):
+		for i in range(0,len(self.card_list)):
+			img=pygame.image.load(self.path+str(self.card_list[i]+1)+'.png')
 			
 			gray=pygame.Surface((Card_scale[0],Card_scale[1]+5),flags=0,depth=32)
 			gray.set_alpha(100)
-
 			self.screen.blit(img,(Card_pos[0]+i*Card_size,Card_pos[1]))
-			self.screen.blit(gray,(Card_pos[0]+i*Card_size,Card_pos[1]))
-			self.screen.blit(gray,(Card_pos[0]+i*Card_size,Card_pos[1]))
+			
+			if (pygame.time.get_ticks()-self.time_list[i]<self.cd_list[i]):
+				x=(pygame.time.get_ticks()-self.time_list[i])/self.cd_list[i]
+				x=(1-x)
+				self.screen.blit(gray,(Card_pos[0]+i*Card_size,Card_pos[1]))
+				gray=pygame.Surface((Card_scale[0],int((Card_scale[1]+5)*x)),flags=0,depth=32)
+				gray.set_alpha(100)
+				self.screen.blit(gray,(Card_pos[0]+i*Card_size,Card_pos[1]))
+			else:
+				if (sunsum<self.cost_list[i]):
+					self.screen.blit(gray,(Card_pos[0]+i*Card_size,Card_pos[1]))
 
 	def Choose(self,click,sunsum):
 		if (sunsum<=0):
 			return
 		pos=( int(round(click[0])),int(round(click[1])) )
 		for i in range(len(self.card_list)):
-			if (self.time_list[i]>0):
+			if (pygame.time.get_ticks()-self.time_list[i]<self.cd_list[i]):
 				continue
 			if (sunsum<self.cost_list[i]):
+				print(sunsum,self.cost_list[i])
 				continue
 			if (0<= pos[0]-(Card_pos[0]+i*Card_size)<=Card_Width and 0<=pos[1]-Card_pos[1]<=Card_Height):
 				self.select=self.card_list[i]
 		print(self.select)
 
-	def Put(self,click):
-		pos=( int(round(click[0])),int(round(click[1])) )
+	def Put(self,id):
+		for i in range(0,len(self.card_list)):
+			if (self.card_list[i]==id):
+				self.time_list[i]=pygame.time.get_ticks()
+				return
 
 class Bullet():
 	def __init__(self,scr,line,pos,id):
