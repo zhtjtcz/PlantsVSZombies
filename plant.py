@@ -136,7 +136,10 @@ class Bullet():
 			self.exist=False
 			return
 		img=pygame.image.load(self.path+str(self.id)+'.png')
-		self.screen.blit(img,(self.pos,Coordinate_origin[1]+Block_size_height*(self.line)))
+		if (self.id==3):
+			self.screen.blit(img,(self.pos+40,Coordinate_origin[1]+Block_size_height*(self.line)))
+		else:
+			self.screen.blit(img,(self.pos,Coordinate_origin[1]+Block_size_height*(self.line)))
 		if (self.id!=3):
 			self.pos+=self.speed
 		if (self.id==3):
@@ -274,3 +277,40 @@ class WallNut():
 			self.sit=1
 			self.fps=1
 			self.pic_sum=11
+
+class SnowPea():
+	def __init__(self,scr,id,pos):
+		self.sit=1
+		self.fps=1
+		self.pos=pos
+		self.cd=1400
+		self.screen=scr
+		self.hp=Plant_hp[id]
+		self.dic=Plant_dic[id]
+		self.pic_sum=Plant_Picsum[id]
+		self.time=pygame.time.get_ticks()-1000
+		self.pic_pos=(Coordinate_origin[0]+Block_size_width*pos[1],Coordinate_origin[1]+Block_size_height*pos[0])
+
+	def Draw(self):
+		img=pygame.image.load(self.dic+str(self.sit)+'.png')
+		self.screen.blit(img,self.pic_pos)
+		self.fps+=1
+		if (self.fps>=Plant_Move_FPS):
+			self.fps=1
+			self.sit+=1
+			if (self.sit>self.pic_sum):
+				self.sit=1
+
+	def Event(self,a,bulllist,zomlist):
+		if (self.hp<=0):
+			return
+		if (pygame.time.get_ticks()-self.time <= self.cd):
+			return
+		for zom in zomlist:
+			if (self.pos[0]!=zom.line):
+				continue
+			if (zom.die==True):
+				continue
+			bulllist.append(Bullet(self.screen,self.pos[0],Coordinate_origin[1]+self.pos[1]*Block_size_width,2))
+			self.time=pygame.time.get_ticks()
+			return

@@ -20,7 +20,7 @@ class GameControl():
 		self.all_sprites=pygame.sprite.Group()
 		self.clock=pygame.time.Clock()
 		self.sun=Sun(self.screen)
-		self.card=Card(self.screen,[0,1,2])
+		self.card=Card(self.screen,[0,1,2,3])
 		self.map=[[-1 for i in range(9)] for i in range(5)]
 		self.plant=[]
 		self.zombies=[]
@@ -97,7 +97,9 @@ class GameControl():
 			self.plant.append(PeaShooter(self.screen,1,(y,x)))
 		elif (self.map[y][x]==2):
 			self.plant.append(WallNut(self.screen,2,(y,x)))
-
+		elif (self.map[y][x]==3):
+			self.plant.append(SnowPea(self.screen,3,(y,x)))
+		
 		'''
 		植物名称与ID不符,有待修正
 		'''
@@ -208,12 +210,12 @@ class GameControl():
 			self.PlantDraw()
 			self.PlantEvent()
 
-			self.BulletDraw()
-			self.BulletEvent()
-
 			self.CreateZom()
 			self.ZomDraw()
 			self.ZomEvent()
+
+			self.BulletDraw()
+			self.BulletEvent()
 
 			self.sun.Appear()
 			self.sun.Draw()
