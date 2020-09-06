@@ -19,13 +19,22 @@ class NolMal_Zombie():
 		self.speed=0.4
 		self.die=False
 
+		self.head_pic=1
+		self.head_fps=1
+		self.die_fps=1
+		self.die_pic=1
+		self.body_pic=1
+
 	def Draw(self):
 		if (self.die==True):
 			return
 
+		if (self.hp<=0 and self.sit!='WithoutHead'):
+			self.sit='WithoutHead'
+
 		if (self.hp<=0):
-			self.die=True
-			return
+			self.Die()
+			return			
 
 		img=pygame.image.load(self.path+'\\'+self.sit+'\\'+str(self.picsit)+'.png')
 		self.screen.blit(img,(self.pos,115+(self.line-1)*Block_size_height))
@@ -41,6 +50,9 @@ class NolMal_Zombie():
 	def Event(self,map):
 		if (self.die==True):
 			return
+		if (self.hp<=0):
+			return
+		
 		flag=False
 
 		for pla in map:
@@ -75,11 +87,31 @@ class NolMal_Zombie():
 			self.pic_sum=self.dic[self.sit]
 			self.speed=0.4
 
-	def Attack(self):
-		pass
-
 	def Die(self):
-		pass
-	
+		if (self.head_pic!=-1):
+			img=pygame.image.load('Picture\Zombies\Zom1\WithoutHead\\'+str(self.head_pic)+'.png')
+			self.screen.blit(img,(self.pos,115+(self.line-1)*Block_size_height))
+
+			img=pygame.image.load('Picture\Zombies\Zom1\LostHead\\'+str(self.head_pic)+'.png')
+			self.screen.blit(img,(self.pos+60,115+(self.line-1)*Block_size_height))
+			self.pos-=self.speed
+			self.head_fps+=1
+
+			if (self.head_fps>=Zombie_Move_FPS):
+				self.head_fps=1
+				self.head_pic+=1
+			if (self.head_pic>12):
+				self.head_pic=-1
+				self.head_fps=1
+		else:
+			img=pygame.image.load('Picture\Zombies\Zom1\Die\\'+str(self.body_pic)+'.png')
+			self.screen.blit(img,(self.pos,115+(self.line-1)*Block_size_height))
+			self.head_fps+=1
+			if (self.head_fps>=Zombie_Move_FPS):
+				self.head_fps=1
+				self.body_pic+=1
+			if (self.body_pic>10):
+				self.die=True
+
 	def Change(self,map):
 		pass
