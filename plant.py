@@ -355,3 +355,100 @@ class RepeaterPea():
 			bulllist.append(Bullet(self.screen,self.pos[0],Coordinate_origin[1]+self.pos[1]*Block_size_width+30,1))
 			self.time=pygame.time.get_ticks()
 			return
+
+class PotatoMine():
+	def __init__(self,scr,id,pos):
+		self.sit=1
+		self.fps=1
+		self.pos=pos
+		self.screen=scr
+		self.hp=Plant_hp[id]
+		self.dic=Plant_dic[id]
+		self.pic_sum=Plant_Picsum[id]
+		self.time=pygame.time.get_ticks()
+		self.sleep=True
+		self.pic_pos=(Coordinate_origin[0]+Block_size_width*pos[1],Coordinate_origin[1]+Block_size_height*pos[0])
+
+	def Draw(self):
+		if (pygame.time.get_ticks()-self.time>=15000):
+			self.sleep=False
+		if (self.sleep==True):
+			img=pygame.image.load(self.dic+'sleep\\'+str(self.sit)+'.png').convert()
+			img.set_colorkey(WHITE)
+			self.screen.blit(img,self.pic_pos)
+			return
+		if (self.sit==-1):
+			if (self.fps==36):
+				'''
+				有待调整
+				'''
+				self.hp=0
+				return
+			img=pygame.image.load(self.dic+'1.png').convert()
+			img.set_colorkey(WHITE)
+			self.screen.blit(img,self.pic_pos)
+			self.fps+=1
+			return
+		img=pygame.image.load(self.dic+'Nolmal\\'+str(self.sit)+'.png').convert()
+		img.set_colorkey(WHITE)
+		self.screen.blit(img,self.pic_pos)
+		self.fps+=1
+		if (self.fps>=Plant_Move_FPS):
+			self.fps=1
+			self.sit+=1
+			if (self.sit>self.pic_sum):
+				self.sit=1
+
+	def Event(self,a,bulllist,zomlist):
+		if (self.hp<=0):
+			return
+		if (self.sleep==True):
+			return
+		for zom in zomlist:
+			if (self.pos[0]!=zom.line):
+				continue
+			if (zom.die==True):
+				continue
+			if (self.pic_pos[0]<=zom.pos and self.pic_pos[0]+5>zom.pos):
+				self.fps=1
+				self.sit=-1
+				zom.die=True
+				return
+
+class Spikeweed():
+	def __init__(self,scr,id,pos):
+		self.sit=1
+		self.fps=1
+		self.pos=pos
+		self.screen=scr
+		self.hp=Plant_hp[id]
+		self.dic=Plant_dic[id]
+		self.pic_sum=Plant_Picsum[id]
+		self.time=pygame.time.get_ticks()
+		self.pic_pos=(Coordinate_origin[0]+Block_size_width*pos[1],Coordinate_origin[1]+Block_size_height*(pos[0]+0.5))
+
+	def Draw(self):
+		img=pygame.image.load(self.dic+str(self.sit)+'.png').convert()
+		img.set_colorkey(WHITE)
+		self.screen.blit(img,self.pic_pos)
+		self.fps+=1
+		if (self.fps>=Plant_Move_FPS):
+			self.fps=1
+			self.sit+=1
+			if (self.sit>self.pic_sum):
+				self.sit=1
+
+	def Event(self,a,bulllist,zomlist):
+		if (self.hp<=0):
+			return
+		if (pygame.time.get_ticks()-self.time<=700):
+			return
+		self.time=pygame.time.get_ticks()
+		for zom in zomlist:
+			if (self.pos[0]!=zom.line):
+				continue
+			if (zom.die==True):
+				continue
+			if (zom.pos<=self.pic_pos[0] and zom.pos>=self.pic_pos[0]-Block_size_width):
+				print('!!!')
+				zom.hp-=1

@@ -30,6 +30,7 @@ Card_Height=65
 
 
 BLACK=(0,0,0)
+WHITE=(255,255,255)
 GRAY=(187,187,187)
 INF=0x3f3f3f3f
 #其他参数
@@ -43,20 +44,22 @@ INF=0x3f3f3f3f
 Plant Data
 '''
 
-Plant_cost=[50,100,50,175,200]
-Plant_cd=[7500,7500,30000,7500,7500]
+Plant_cost=[50,100,50,175,200,25,100]
+Plant_cd=[7500,7500,30000,7500,7500,30000,7500]
 
-Plant_hp=[30,30,400,30,30]
-Plant_Picsum=[18,13,16,15,15]
+Plant_hp=[30,30,400,30,30,30,1000]
+Plant_Picsum=[18,13,16,15,15,8,19]
 Plant_dic=['Picture\Plants\SunFlower\\',
 			'Picture\Plants\PeaShooter\\',
 			'Picture\Plants\WallNut\\',
 			'Picture\Plants\SnowPea\\',
-			'Picture\Plants\RepeaterPea\\']
+			'Picture\Plants\RepeaterPea\\',
+			'Picture\Plants\PotatoMine\\',
+			'Picture\Plants\Spikeweed\\']
 
 
 '''
-顺序:向日葵,豌豆射手,坚果墙,寒冰射手,双发射手
+顺序:向日葵,豌豆射手,坚果墙,寒冰射手,双发射手,土豆雷,地刺
 '''
 
 # Zombie Data

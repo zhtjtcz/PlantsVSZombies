@@ -20,7 +20,7 @@ class GameControl():
 		self.all_sprites=pygame.sprite.Group()
 		self.clock=pygame.time.Clock()
 		self.sun=Sun(self.screen)
-		self.card=Card(self.screen,[0,1,2,3,4])
+		self.card=Card(self.screen,[0,1,2,3,4,6])
 		self.map=[[-1 for i in range(9)] for i in range(5)]
 		self.plant=[]
 		self.zombies=[]
@@ -58,6 +58,7 @@ class GameControl():
 			return
 		
 		img=pygame.image.load('Picture\Plants\Special\\'+str(self.card.select)+'.png').convert_alpha()
+		img.set_colorkey(WHITE)
 		pos=(Coordinate_origin[0]+Block_size_width*x,Coordinate_origin[1]+Block_size_height*y)
 		rect=img.get_rect()
 
@@ -77,7 +78,7 @@ class GameControl():
 		self.map[y][x]=self.card.select
 		self.card.Put(self.card.select)
 		self.card.select=-1
-		self.sun.sum-=self.card.cost_list[self.map[y][x]]
+		self.sun.sum-=self.card.cost_list[self.card.card_list.index(self.map[y][x])]
 		if (self.map[y][x]==0):
 			self.plant.append(Sunflower(self.screen,0,(y,x)))
 		elif (self.map[y][x]==1):
@@ -88,8 +89,14 @@ class GameControl():
 			self.plant.append(SnowPea(self.screen,3,(y,x)))
 		elif (self.map[y][x]==4):
 			self.plant.append(RepeaterPea(self.screen,4,(y,x)))
+		elif (self.map[y][x]==5):
+			self.plant.append(PotatoMine(self.screen,5,(y,x)))
+		elif (self.map[y][x]==6):
+			self.plant.append(Spikeweed(self.screen,6,(y,x)))
+		
 		'''
 		植物名称与ID不符,有待修正
+		已基本完成修正,有待测试
 		'''
 	
 	def PlantDraw(self):
