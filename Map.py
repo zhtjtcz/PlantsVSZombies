@@ -20,7 +20,7 @@ class GameControl():
 		self.all_sprites=pygame.sprite.Group()
 		self.clock=pygame.time.Clock()
 		self.sun=Sun(self.screen)
-		self.card=Card(self.screen,[0,1,2,3,4,6])
+		self.card=Card(self.screen,[0,1,2,3,6,7])
 		self.map=[[-1 for i in range(9)] for i in range(5)]
 		self.plant=[]
 		self.zombies=[]
@@ -61,7 +61,10 @@ class GameControl():
 		img.set_colorkey(WHITE)
 		pos=(Coordinate_origin[0]+Block_size_width*x,Coordinate_origin[1]+Block_size_height*y)
 		rect=img.get_rect()
-
+		if (self.card.select==7):
+			pos=(pos[0],pos[1]-20)
+		if (self.card.select==6):
+			pos=(pos[0],pos[1]+Block_size_height*0.5)
 		self.blit_alpha(img,rect,pos,150)
 
 	def SetPlant(self,click):
@@ -93,6 +96,8 @@ class GameControl():
 			self.plant.append(PotatoMine(self.screen,5,(y,x)))
 		elif (self.map[y][x]==6):
 			self.plant.append(Spikeweed(self.screen,6,(y,x)))
+		elif (self.map[y][x]==7):
+			self.plant.append(Chomper(self.screen,7,(y,x)))
 		
 		'''
 		植物名称与ID不符,有待修正

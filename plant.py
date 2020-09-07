@@ -379,9 +379,6 @@ class PotatoMine():
 			return
 		if (self.sit==-1):
 			if (self.fps==36):
-				'''
-				有待调整
-				'''
 				self.hp=0
 				return
 			img=pygame.image.load(self.dic+'1.png').convert()
@@ -452,3 +449,76 @@ class Spikeweed():
 			if (zom.pos<=self.pic_pos[0] and zom.pos>=self.pic_pos[0]-Block_size_width):
 				print('!!!')
 				zom.hp-=1
+
+class Chomper():
+	def __init__(self,scr,id,pos):
+		self.sit=1
+		self.fps=1
+		self.pos=pos
+		self.screen=scr
+		self.hp=Plant_hp[id]
+		self.dic=Plant_dic[id]
+		self.pic_sum=Plant_Picsum[id]
+		self.time=pygame.time.get_ticks()
+		self.path='Nolmal'
+		self.pic_pos=(Coordinate_origin[0]+Block_size_width*pos[1],Coordinate_origin[1]+Block_size_height*pos[0]-20)
+
+	def Draw(self):
+		if (self.hp<=0):
+			return
+		if (self.path=='Eating' and pygame.time.get_ticks()-self.time>=42000):
+			self.fps=1
+			self.sit=1
+			self.path='Nolmal'
+		if (self.path=='Attack'):
+			img=pygame.image.load(self.dic+self.path+'\\'+str(self.sit)+'.png')
+			self.screen.blit(img,self.pic_pos)
+			self.fps+=1
+			if (self.fps>=3):
+				self.fps=1
+				self.sit+=1
+				if (self.sit>9):
+					self.time=pygame.time.get_ticks()
+					self.path='Eating'
+					self.fps=1
+					self.sit=1
+					return
+		elif (self.path=='Eating'):
+			img=pygame.image.load(self.dic+self.path+'\\'+str(self.sit)+'.png')
+			self.screen.blit(img,self.pic_pos)
+			self.fps+=1
+			if (self.fps>=Plant_Move_FPS):
+				self.fps=1
+				self.sit+=1
+				if (self.sit>6):
+					self.sit=1
+		else:
+			img=pygame.image.load(self.dic+self.path+'\\'+str(self.sit)+'.png')
+			self.screen.blit(img,self.pic_pos)
+			self.fps+=1
+			if (self.fps>=Plant_Move_FPS):
+				self.fps=1
+				self.sit+=1
+				if (self.sit>13):
+					self.sit=1
+
+	def Event(self,a,bulllist,zomlist):
+		if (self.hp<=0):
+			return
+		if (self.path=='Eating'):
+			return
+		for zom in zomlist:
+			if (self.pos[0]!=zom.line):
+				continue
+			if (zom.die==True):
+				continue
+			if (self.pic_pos[0]<=zom.pos and self.pic_pos[0]+5>zom.pos):
+				if (self.path=='Attack'):
+					if (self.sit>=3):
+						zom.die=True
+					return
+				self.time=pygame.time.get_ticks()
+				self.path='Attack'
+				self.sit=1
+				self.fps=1
+				return

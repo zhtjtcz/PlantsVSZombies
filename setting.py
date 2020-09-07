@@ -44,18 +44,19 @@ INF=0x3f3f3f3f
 Plant Data
 '''
 
-Plant_cost=[50,100,50,175,200,25,100]
-Plant_cd=[7500,7500,30000,7500,7500,30000,7500]
+Plant_cost=[50,100,50,175,200,25,100,150]
+Plant_cd=[7500,7500,30000,7500,7500,30000,7500,7500]
 
-Plant_hp=[30,30,400,30,30,30,1000]
-Plant_Picsum=[18,13,16,15,15,8,19]
+Plant_hp=[30,30,400,30,30,30,1000,30]
+Plant_Picsum=[18,13,16,15,15,8,19,13]
 Plant_dic=['Picture\Plants\SunFlower\\',
 			'Picture\Plants\PeaShooter\\',
 			'Picture\Plants\WallNut\\',
 			'Picture\Plants\SnowPea\\',
 			'Picture\Plants\RepeaterPea\\',
 			'Picture\Plants\PotatoMine\\',
-			'Picture\Plants\Spikeweed\\']
+			'Picture\Plants\Spikeweed\\',
+			'Picture\Plants\Chomper\\']
 
 
 '''
