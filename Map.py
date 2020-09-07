@@ -20,7 +20,7 @@ class GameControl():
 		self.all_sprites=pygame.sprite.Group()
 		self.clock=pygame.time.Clock()
 		self.sun=Sun(self.screen)
-		self.card=Card(self.screen,[0,1,2,3,6,7])
+		self.card=Card(self.screen,[0,1,2,3,4,5])
 		self.map=[[-1 for i in range(9)] for i in range(5)]
 		self.plant=[]
 		self.zombies=[]
@@ -153,7 +153,7 @@ class GameControl():
 	def CreateZom(self):
 		if (pygame.time.get_ticks() - self.time <= 10000):
 			return
-		self.zombies.append(NolMal_Zombie(self.screen,0,random.randint(0,4)))
+		self.zombies.append(BucketheadZombie(self.screen,2,random.randint(0,4)))
 		self.time=pygame.time.get_ticks()
 	'''
 	将被覆盖

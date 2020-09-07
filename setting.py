@@ -66,11 +66,13 @@ Plant_dic=['Picture\Plants\SunFlower\\',
 # Zombie Data
 
 Zom_pos=700
-Zombie_hp=[10,10]
-Zombie_path=['Picture\Zombies\Zom1']
-Zombie_dic=[{'Walk':22,'Attack':21,'Withouthead':18,'LostHead':12,'Die':10}]
+Zombie_hp=[10,25,55]
+Zombie_path=['Picture\Zombies\Zom1','Picture\Zombies\Zom2','Picture\Zombies\Zom3']
+Zombie_dic=[{'Walk':22,'Attack':21,'Withouthead':18,'LostHead':12,'Die':10},
+			{'Walk':21,'Walk2':22,'Attack':11,'Attack2':21,'Withouthead':18,'LostHead':12,'Die':10},
+			{'Walk':15,'Walk2':22,'Attack':11,'Attack2':21,'Withouthead':18,'LostHead':12,'Die':10}]
 
 '''
-顺序:普通僵尸,路障僵尸
+顺序:普通僵尸,路障僵尸,铁桶僵尸
 僵尸血量以豌豆为基础单位
 '''
