@@ -1,6 +1,14 @@
 from setting import *
 import pygame
 import random
+import sys
+import os
+import time
+import threading
+import psutil
+import subprocess
+from multiprocessing import Process
+from PIL import Image, ImageTk
 
 class Sun():
 	def __init__(self,scr):
@@ -18,6 +26,7 @@ class Sun():
 		
 		self.sunlist.append([random.randint(50,600),80,1,1,pygame.time.get_ticks(),1])
 		self.time=pygame.time.get_ticks()
+	#阳光生成
 
 	def Draw(self):
 		a=[]
@@ -28,8 +37,9 @@ class Sun():
 			a.append(sun)
 			pic=pygame.image.load(self.path+str(sun[2])+'.png')
 			self.screen.blit(pic,(sun[0],sun[1]))
-			if (sun[1]<=450 and sun[5]>=1):
-				sun[1]+=1.6
+			if (sun[1]<=450):
+				if (sun[5]>=1):
+					sun[1]+=1.6
 			
 			sun[3]+=1
 			if (sun[3]>=Plant_Move_FPS):
@@ -63,6 +73,8 @@ class Sun():
 				sun[4]=-100000
 				self.pick_list.append((sun[0],sun[1],sun[2],(sun[0]-50),(sun[1]-50),pygame.time.get_ticks()))
 				break
+	#阳光拾取
+#阳光类
 
 class Card():
 	def __init__(self,scr,card_list):
@@ -93,6 +105,7 @@ class Card():
 				x=(pygame.time.get_ticks()-self.time_list[i])/self.cd_list[i]
 				x=(1-x)
 				self.screen.blit(gray,(Card_pos[0]+i*Card_size,Card_pos[1]))
+
 				gray=pygame.Surface((Card_scale[0],int((Card_scale[1]+5)*x)),flags=0,depth=32)
 				gray.set_alpha(100)
 				self.screen.blit(gray,(Card_pos[0]+i*Card_size,Card_pos[1]))
@@ -108,17 +121,54 @@ class Card():
 			if (pygame.time.get_ticks()-self.time_list[i]<self.cd_list[i]):
 				continue
 			if (sunsum<self.cost_list[i]):
-				print(sunsum,self.cost_list[i])
 				continue
 			if (0<= pos[0]-(Card_pos[0]+i*Card_size)<=Card_Width and 0<=pos[1]-Card_pos[1]<=Card_Height):
 				self.select=self.card_list[i]
-		print(self.select)
 
 	def Put(self,id):
 		for i in range(0,len(self.card_list)):
 			if (self.card_list[i]==id):
 				self.time_list[i]=pygame.time.get_ticks()
 				return
+#卡片槽类
+
+class Car():
+	def __init__(self,scr):
+		self.screen=scr
+		self.pos=[]
+		self.img=pygame.image.load('Picture\Others\Car.png')
+		for i in range(5):
+			self.pos.append(Coordinate_origin[0]-65)
+		self.sit=[0 for i in range(5)]
+
+	def Draw(self):
+		for i in range(5):
+			if (self.sit[i]==2):
+				continue
+			self.screen.blit(self.img,(self.pos[i],Coordinate_origin[1]+i*Block_size_height))
+	
+	def Event(self,zombies):
+		for i in range(5):
+			if (self.sit[i]==2):
+				continue
+			if (self.sit[i]==1):
+				for zom in zombies:
+					if (zom.line!=i):
+						continue
+					if (zom.pos<=self.pos[i]+2):
+						zom.hp=0
+				self.pos[i]+=6.0
+			if (self.pos[i]>=800):
+				self.sit[i]=2
+				continue
+			
+			for zom in zombies:
+				if (i!=zom.line):
+					continue
+				if (zom.pos<=-70):
+					self.sit[i]=1
+					return
+#小推车类
 
 class Bullet():
 	def __init__(self,scr,line,pos,id):
@@ -147,6 +197,24 @@ class Bullet():
 			if (self.sit==2):
 				self.exist=False
 
+	def Cha(self,a,b):
+		return a[0]*b[1]-a[1]*b[0]
+
+	def Vector(self,a,b):
+		return [a[0]-b[0],a[1]-b[1]]
+
+	def Cross(self,zombie):
+		pos=[self.pos,Coordinate_origin[1]+Block_size_height*(self.line)]
+		r=12
+		D=[zombie.pos,Coordinate_origin[1]+Block_size_height*(self.line-0.5)]
+		C=[zombie.pos+Block_size_width,Coordinate_origin[1]+Block_size_height*(self.line-0.5)]
+		B=[zombie.pos+Block_size_width,Coordinate_origin[1]+Block_size_height*(self.line+0.5)]
+		A=[zombie.pos,Coordinate_origin[1]+Block_size_height*(self.line+0.5)]
+		if ():
+			return True
+		else:
+			return False
+
 	def Attack(self,zombie):
 		if (self.id==3):
 			return
@@ -156,7 +224,7 @@ class Bullet():
 				continue
 			if (self.line!=zom.line):
 				continue
-			if (abs(self.pos-zom.pos)<=30):
+			if (abs(self.pos-zom.pos)<=10):
 				where=min(where,zom.pos)
 		
 		if (where!=INF):
@@ -174,9 +242,8 @@ class Bullet():
 					#self.pos+=60
 					return
 
-	'''
-	有盲区,有待修正
-	'''
+#子弹类
+#共三种豌豆,分别为普通豌豆,寒冰豌豆,爆开的豌豆
 
 class Sunflower():
 	def __init__(self,scr,id,pos):
@@ -190,7 +257,8 @@ class Sunflower():
 		self.pic_sum=Plant_Picsum[id]
 		self.time=pygame.time.get_ticks()-random.randint(0,self.cd)
 		self.pic_pos=(Coordinate_origin[0]+Block_size_width*pos[1],Coordinate_origin[1]+Block_size_height*pos[0])
-	
+		#参数预处理
+
 	def Draw(self):
 		img=pygame.image.load(self.dic+str(self.sit)+'.png')
 		self.screen.blit(img,self.pic_pos)
@@ -200,13 +268,43 @@ class Sunflower():
 			self.sit+=1
 			if (self.sit>self.pic_sum):
 				self.sit=1
+	#绘制图像
+	#每一幅图显示固定帧数，以达到动态显示的效果
+
+	def Danger(self,zomlist):
+		if (self.hp<=0):
+			return
+		cnt=0
+		for zom in zomlist:
+			if (zom.hp<=0):
+				continue
+			if (zom.die==True):
+				continue
+			if (zom.pos-self.pic_pos[0]<=50):
+				cnt+=1
+		while (cnt>=0):
+			self.time-=0.02
+			cnt-=1
 
 	def Event(self,a,bulllist,zomlist):
 		if (self.hp<=0):
 			return
+		flag=0
+		for zom in zomlist:
+			if (zom.hp<=0):
+				continue
+			if (zom.die==True):
+				continue
+			if (zom.pos-self.pic_pos[0]<=50):
+				flag=1
+		if (flag>=1):
+			self.Danger(zomlist)
+
 		if (pygame.time.get_ticks()-self.time >= self.cd):
 			a.sunlist.append([self.pic_pos[0]+10,self.pic_pos[1]+10,1,1,pygame.time.get_ticks(),0])
 			self.time=pygame.time.get_ticks()
+	#阳光产出判定
+#向日葵类
 
 class PeaShooter():
 	def __init__(self,scr,id,pos):
@@ -231,19 +329,48 @@ class PeaShooter():
 			if (self.sit>self.pic_sum):
 				self.sit=1
 
+	def Danger(self,zomlist):
+		if (self.hp<=0):
+			return
+		cnt=0
+		for zom in zomlist:
+			if (zom.hp<=0):
+				continue
+			if (zom.die==True):
+				continue
+			if (zom.pos-self.pic_pos[0]<=50):
+				cnt+=1
+		while (cnt>=0):
+			self.time-=0.02
+			cnt-=1
+
 	def Event(self,a,bulllist,zomlist):
 		if (self.hp<=0):
 			return
 		if (pygame.time.get_ticks()-self.time <= self.cd):
 			return
+		
+		flag=0
+		for zom in zomlist:
+			if (zom.hp<=0):
+				continue
+			if (zom.die==True):
+				continue
+			if (zom.pos-self.pic_pos[0]<=50):
+				flag=1
+		if (flag>=1):
+			self.Danger(zomlist)
+		
 		for zom in zomlist:
 			if (self.pos[0]!=zom.line):
 				continue
 			if (zom.die==True):
 				continue
-			bulllist.append(Bullet(self.screen,self.pos[0],Coordinate_origin[1]+self.pos[1]*Block_size_width,1))
+			bulllist.append(Bullet(self.screen,self.pos[0],Coordinate_origin[1]+self.pos[1]*Block_size_width-5,1))
 			self.time=pygame.time.get_ticks()
 			return
+	#攻击判定
+#豌豆射手类
 
 class WallNut():
 	def __init__(self,scr,id,pos):
@@ -267,9 +394,36 @@ class WallNut():
 			if (self.sit>self.pic_sum):
 				self.sit=1		
 
+	def Danger(self,zomlist):
+		if (self.hp<=0):
+			return
+		cnt=0
+		for zom in zomlist:
+			if (zom.hp<=0):
+				continue
+			if (zom.die==True):
+				continue
+			if (zom.pos-self.pic_pos[0]<=50):
+				cnt+=1
+		while (cnt>=0):
+			self.hp+=0.002
+			cnt-=1
+
 	def Event(self,a,bulllist,zomlist):
 		if (self.hp<=0):
 			return
+				
+		flag=0
+		for zom in zomlist:
+			if (zom.hp<=0):
+				continue
+			if (zom.die==True):
+				continue
+			if (zom.pos-self.pic_pos[0]<=50):
+				flag=1
+		if (flag>=1):
+			self.Danger(zomlist)
+
 		if (self.hp<=133 and self.path!='Cracked2\\'):
 			self.path='Cracked2\\'
 			self.sit=1
@@ -280,6 +434,8 @@ class WallNut():
 			self.sit=1
 			self.fps=1
 			self.pic_sum=11
+	#检测血量并更新图片
+#坚果墙类
 
 class SnowPea():
 	def __init__(self,scr,id,pos):
@@ -304,19 +460,48 @@ class SnowPea():
 			if (self.sit>self.pic_sum):
 				self.sit=1
 
+	def Danger(self,zomlist):
+		if (self.hp<=0):
+			return
+		cnt=0
+		for zom in zomlist:
+			if (zom.hp<=0):
+				continue
+			if (zom.die==True):
+				continue
+			if (zom.pos-self.pic_pos[0]<=50):
+				cnt+=1
+		while (cnt>=0):
+			self.time-=0.02
+			cnt-=1
+
 	def Event(self,a,bulllist,zomlist):
 		if (self.hp<=0):
 			return
 		if (pygame.time.get_ticks()-self.time <= self.cd):
 			return
+		
+		flag=0
+		for zom in zomlist:
+			if (zom.hp<=0):
+				continue
+			if (zom.die==True):
+				continue
+			if (zom.pos-self.pic_pos[0]<=50):
+				flag=1
+		if (flag>=1):
+			self.Danger(zomlist)
+
+
 		for zom in zomlist:
 			if (self.pos[0]!=zom.line):
 				continue
 			if (zom.die==True):
 				continue
-			bulllist.append(Bullet(self.screen,self.pos[0],Coordinate_origin[1]+self.pos[1]*Block_size_width,2))
+			bulllist.append(Bullet(self.screen,self.pos[0],Coordinate_origin[1]+self.pos[1]*Block_size_width-5,2))
 			self.time=pygame.time.get_ticks()
 			return
+#寒冰射手类,基本上同豌豆射手
 
 class RepeaterPea():
 	def __init__(self,scr,id,pos):
@@ -341,20 +526,49 @@ class RepeaterPea():
 			if (self.sit>self.pic_sum):
 				self.sit=1
 
+	def Danger(self,zomlist):
+		if (self.hp<=0):
+			return
+		cnt=0
+		for zom in zomlist:
+			if (zom.hp<=0):
+				continue
+			if (zom.die==True):
+				continue
+			if (zom.pos-self.pic_pos[0]<=50):
+				cnt+=1
+		while (cnt>=0):
+			self.time-=0.02
+			cnt-=1
+
 	def Event(self,a,bulllist,zomlist):
 		if (self.hp<=0):
 			return
 		if (pygame.time.get_ticks()-self.time <= self.cd):
 			return
+		
+		flag=0
+		for zom in zomlist:
+			if (zom.hp<=0):
+				continue
+			if (zom.die==True):
+				continue
+			if (zom.pos-self.pic_pos[0]<=50):
+				flag=1
+		if (flag>=1):
+			self.Danger(zomlist)
+
+
 		for zom in zomlist:
 			if (self.pos[0]!=zom.line):
 				continue
 			if (zom.die==True):
 				continue
-			bulllist.append(Bullet(self.screen,self.pos[0],Coordinate_origin[1]+self.pos[1]*Block_size_width,1))
-			bulllist.append(Bullet(self.screen,self.pos[0],Coordinate_origin[1]+self.pos[1]*Block_size_width+30,1))
+			bulllist.append(Bullet(self.screen,self.pos[0],Coordinate_origin[1]+self.pos[1]*Block_size_width-5,1))
+			bulllist.append(Bullet(self.screen,self.pos[0],Coordinate_origin[1]+self.pos[1]*Block_size_width+25,1))
 			self.time=pygame.time.get_ticks()
 			return
+#双发射手类,同豌豆射手
 
 class PotatoMine():
 	def __init__(self,scr,id,pos):
@@ -372,14 +586,16 @@ class PotatoMine():
 	def Draw(self):
 		if (pygame.time.get_ticks()-self.time>=15000):
 			self.sleep=False
+
 		if (self.sleep==True):
 			img=pygame.image.load(self.dic+'sleep\\'+str(self.sit)+'.png').convert()
 			img.set_colorkey(WHITE)
 			self.screen.blit(img,self.pic_pos)
 			return
+		
 		if (self.sit==-1):
 			if (self.fps==36):
-				self.hp=0
+				self.hp=-100
 				return
 			img=pygame.image.load(self.dic+'1.png').convert()
 			img.set_colorkey(WHITE)
@@ -401,6 +617,8 @@ class PotatoMine():
 			return
 		if (self.sleep==True):
 			return
+		if (self.sit==-1):
+			return
 		for zom in zomlist:
 			if (self.pos[0]!=zom.line):
 				continue
@@ -411,6 +629,8 @@ class PotatoMine():
 				self.sit=-1
 				zom.die=True
 				return
+	#休眠与爆炸判定
+#土豆雷类
 
 class Spikeweed():
 	def __init__(self,scr,id,pos):
@@ -447,8 +667,9 @@ class Spikeweed():
 			if (zom.die==True):
 				continue
 			if (zom.pos<=self.pic_pos[0] and zom.pos>=self.pic_pos[0]-Block_size_width):
-				print('!!!')
 				zom.hp-=1
+	#攻击判定,同时具有不可啃食特性
+#地刺类
 
 class Chomper():
 	def __init__(self,scr,id,pos):
@@ -522,3 +743,5 @@ class Chomper():
 				self.sit=1
 				self.fps=1
 				return
+	#攻击与咀嚼判定
+#大嘴花类
